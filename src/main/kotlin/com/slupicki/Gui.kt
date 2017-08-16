@@ -35,25 +35,25 @@ class Gui : UI() {
 
         form.setWidth(null)
 
-        val firstName = TextField("First name")
-        val lastName = TextField("Last name")
+        val firstNameTF = TextField("First name")
+        val lastNameTF = TextField("Last name")
         val addButton = Button("Add") { _ ->
-            val newPerson = Person(firstName.value, lastName.value)
+            val newPerson = Person(firstNameTF.value, lastNameTF.value)
             repository.save(newPerson)
             refreshGrid(grid)
             log.info("Add $newPerson")
-            firstName.value = ""
-            lastName.value = ""
+            firstNameTF.value = ""
+            lastNameTF.value = ""
         }
         val filterByLastNameButton = Button("Filter by last name") { _ ->
-            val lastName = lastName.value
+            val lastName = lastNameTF.value
             persons = repository.findByLastName(lastName).toList()
             refreshGrid(grid, persons)
             log.info("Filter by last name '$lastName'")
         }
 
-        form.addComponent(firstName)
-        form.addComponent(lastName)
+        form.addComponent(firstNameTF)
+        form.addComponent(lastNameTF)
         form.addComponent(addButton)
         form.addComponent(filterByLastNameButton)
 
