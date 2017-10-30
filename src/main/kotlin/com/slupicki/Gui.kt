@@ -18,9 +18,9 @@ class Gui : UI() {
     val log = LoggerFactory.getLogger(this.javaClass)!!
 
     @Autowired
-    lateinit var repository : PersonRepository
+    lateinit var repository: PersonRepository
 
-    var persons : List<Person> = emptyList()
+    var persons: List<Person> = emptyList()
 
     override fun init(request: VaadinRequest) {
         val layout = VerticalLayout()
@@ -47,7 +47,11 @@ class Gui : UI() {
         }
         val filterByLastNameButton = Button("Filter by last name") { _ ->
             val lastName = lastNameTF.value
-            persons = repository.findByLastName(lastName).toList()
+            persons = (if (lastName.isEmpty())
+                repository.findAll()
+            else
+                repository.findByLastName(lastName)
+                    ).toList()
             refreshGrid(grid, persons)
             log.info("Filter by last name '$lastName'")
         }
@@ -65,11 +69,12 @@ class Gui : UI() {
         refreshGrid(grid)
     }
 
-    fun refreshGrid(grid : Grid<Person>) {
+    fun refreshGrid(grid: Grid<Person>) {
         persons = repository.findAll().toList()
         refreshGrid(grid, persons)
     }
-    fun refreshGrid(grid : Grid<Person>, persons : List<Person>) {
+
+    fun refreshGrid(grid: Grid<Person>, persons: List<Person>) {
         grid.setItems(persons)
     }
 }
