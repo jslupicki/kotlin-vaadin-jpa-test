@@ -46,8 +46,8 @@ class Gui : UI() {
         binder.forField(lastNameTF)
                 .withValidator({ it.equals(it.toUpperCase()) }, "Have to be uppercase")
                 .bind("lastName")
-        binder.withValidator({!it.lastName.equals("A")}, "Error!")
-        
+        binder.withValidator({ !it.lastName.equals("A") }, "Error!")
+
         val addButton = Button("Add") { _ ->
             val newPerson = Person()
             binder.writeBean(newPerson)
