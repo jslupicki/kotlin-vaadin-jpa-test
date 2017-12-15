@@ -3,6 +3,7 @@ package com.slupicki
 import com.vaadin.annotations.Push
 import com.vaadin.annotations.Theme
 import com.vaadin.annotations.VaadinServletConfiguration
+import com.vaadin.data.Binder
 import com.vaadin.server.VaadinRequest
 import com.vaadin.server.VaadinServlet
 import com.vaadin.spring.annotation.SpringUI
@@ -37,8 +38,19 @@ class Gui : UI() {
 
         val firstNameTF = TextField("First name")
         val lastNameTF = TextField("Last name")
+
+        val binder = Binder(Person::class.java)
+        binder.forField(firstNameTF)
+                .asRequired("Required")
+                .bind("firstName")
+        binder.forField(lastNameTF)
+                .withValidator({ it.equals(it.toUpperCase()) }, "Have to be uppercase")
+                .bind("lastName")
+        binder.withValidator({!it.lastName.equals("A")}, "Error!")
+        
         val addButton = Button("Add") { _ ->
-            val newPerson = Person(firstNameTF.value, lastNameTF.value)
+            val newPerson = Person()
+            binder.writeBean(newPerson)
             repository.save(newPerson)
             refreshGrid(grid)
             log.info("Add $newPerson")
